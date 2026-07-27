@@ -1,4 +1,4 @@
-# Superside Sales
+# ConvoHub Sync
 
 A single installable Claude Code plugin marketplace bundling the Superside BDR sales toolkit. Add this
 one marketplace and every team's reps get the same tools, each pointed at their **own** team's Notion
