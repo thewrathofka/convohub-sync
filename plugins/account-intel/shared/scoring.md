@@ -47,12 +47,19 @@ Composite of **external hotness + internal engagement**. Sub-scores (1–5):
 
 **Raw** = `External Triggers×5 + Recency×5 + Revivable×3 + Lead footprint×3` (max 80) → normalize `/80×100`.
 
-**Closed-lost modifier** (from the most recent closed-lost `Loss_Reason__c`, see `internal-history.md`):
-- Re-engageable — `Timing / Reconnect Later`, `No Budget / Lost Funding`, `Merge (Stage 0)` → **×1.0**
+**Closed-lost modifier** — keys off the **validated** closed-lost verdict from `internal-history.md` §4
+(the reason cross-checked against the Jiminny call + emails), **not** the raw `Loss_Reason__c`:
+- **Reopenable** (validated: post-close positive activity, unresolved warm thread, re-engageable reason,
+  or a new external trigger — even if the raw field looked negative) → **×1.1** (a dropped-but-warm loss
+  is an *opportunity*, so it lifts readiness).
+- Re-engageable reason, no contradicting signal — `Timing / Reconnect Later`, `No Budget / Lost Funding`,
+  `Merge (Stage 0)` → **×1.0**
 - Neutral — `Price`, `Commercial Reasons`, `Other`, `Unable to discover loss reason` → **×0.9**
-- Disqualifying — `Hard Disqualification (Stage 0)`, `Product Limitation`, `Rejected AI-Powered Service
-  Model`, `Legal issues` → **×0.6**
+- **Confirmed** disqualifying (validated against the call) — `Hard Disqualification`, `Product
+  Limitation`, `Rejected AI-Powered Service Model`, `Legal issues` → **×0.6**
 - No closed-lost → **×1.0**
+(cap the final score at 100 after the modifier.) If the reason couldn't be validated (no Jiminny/Gmail,
+e.g. a non-BDR run), fall back to the raw-field bands above and flag it as unverified.
 
 **Overrides:**
 - External Triggers = 5 → **floor** the verdict at **why not** even if internal signals are thin.

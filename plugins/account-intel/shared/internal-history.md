@@ -87,11 +87,29 @@ WHERE AccountId = :accountId AND IsClosed = true AND IsWon = false
 ORDER BY CloseDate DESC
 ```
 For each: report `Loss_Reason__c` + `Loss_Details__c` + the AE's `Retarget_lost_notes_from_AE__c`, a
-**summary of the conversations**, and **where/why it stalled** — enriched from **Jiminny**: `search_calls`
-for calls tied to that opp/account around the deal window, `get_call` for the summary/transcript, and read
-out the point the deal went quiet (last real engagement → what was the open question / unmet need). The
-closed-lost reason also feeds the Readiness modifier in `scoring.md` (re-engageable vs neutral vs
-disqualifying).
+**summary of the conversations**, and **where/why it stalled**.
+
+**Validate the stated reason — don't parrot it.** The CRM `Loss_Reason__c` is often shorthand or the AE's
+one-word guess, and can be wrong or stale. For each closed-lost opp, actually **read the record**:
+- **Jiminny** — `search_calls` for the qualification/discovery calls tied to that opp/account, then
+  `get_call(include_transcript: true)` and read the transcript: what was the real objection, was there
+  genuine interest, did it die on *our* side (no follow-up) or theirs, was a champion involved?
+- **Gmail / SF activity** — the email thread and the activity timeline around and **after** the close
+  date: is there an **inbound reply or positive touch after `CloseDate`** that contradicts "no next steps"?
+Then state a **verdict** per opp:
+- **Does the stated reason hold up?** If the evidence diverges from `Loss_Reason__c`, say so explicitly
+  (e.g. "logged as *Commercial Reasons / no next steps*, but the qualification call shows real interest
+  that simply never got followed up, and there's an inbound reply 3 weeks after close — this looks
+  **reopenable**, not commercially dead").
+- **Reopen potential + follow-up now?** Reopenable if any of: post-close positive activity, an unresolved
+  warm thread, a re-engageable reason (timing / no-budget / merge), a new external trigger (see
+  `external-hygiene.md`), or a champion still reachable. If reopenable, surface it as a **Conversations
+  Dropped / revival candidate** with a recommended next step and a drafted follow-up.
+This **validated** assessment — not the raw field — is what feeds the closed-lost modifier in `scoring.md`
+(a validated-reopenable closed-lost should *lift* Readiness, not dampen it; only a genuinely hard/
+disqualifying loss confirmed by the call dampens it). Never assume the CRM reason is correct without the
+call/email check; if the connectors aren't available (non-BDR), say the reason is "unverified — CRM
+value only."
 
 ## 5. Notion cross-check
 Pull the account's existing **Conversation Hub** pages (people already tracked) and **All Meetings** rows
