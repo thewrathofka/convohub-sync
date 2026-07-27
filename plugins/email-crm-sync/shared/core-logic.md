@@ -4,8 +4,7 @@ This file is the shared logic for all three email-sync commands (`email-sync`, `
 `email-sync30`). Each command's SKILL.md sets two parameters — `EMAIL_WINDOW_DAYS` (1, 7, or 30) and
 `DEEP_RESOLUTION` (false for the 1-day command, true for 7/30) — then follows this file. It is the
 email-channel sibling of `/convohub` (Jiminny cold calls) and `/linkedin-sync` (LinkedIn inbox), and
-writes into the same shared Notion CRM so the three channels produce one consistent picture. Read
-`~/code/convohub-plugin/shared/core-logic.md` and `~/code/linkedin-crm-sync/shared/core-logic.md`
+writes into the same shared Notion CRM so the three channels produce one consistent picture. See the sibling `convohub` and `linkedin-crm-sync` plugins' `shared/core-logic.md`
 for the routines this file reuses by reference (account resolution, page-section conventions,
 meeting-booked handling).
 
@@ -57,7 +56,7 @@ live schema before assuming it doesn't exist or guessing at a name.
 
 Name (title), Account (relation → All Accounts), Rep (relation → Monthly Scoreboard), Title (text),
 **Connected** (multi_select: Cold call/LinkedIn/Email — the touchpoint-channel field; append "Email"),
-Touch points (multi_select: Cold call/LinkedIn/Email — append "Email"), Chatting? (checkbox — genuine
+Chatting? (checkbox — genuine
 back-and-forth only), Cold call connected? (checkbox), Connected on LinkedIn? (checkbox), Inbounded?
 (checkbox — check for genuine inbound-sourced contacts), Last touched (date), **Suggested follow-up**
 (date — carries a built-in Notion reminder, default 9am Europe/Belgrade on the date itself; this is the
@@ -73,7 +72,7 @@ Step 6), **Quick notes** (text — the 1-2 sentence recap, i.e. the "notes prope
 
 Account Name (title), Rep (relation → Monthly Scoreboard), Parent (text — parent company name; self-name
 if the account is itself a parent), sister/child (text, comma-joined child/sister brand names, lives on
-the parent's page), Priority Type (multi_select: "Growth","Inbound","MQA","MQL","A","B","BDM Selected"),
+the parent's page), Priority Type (multi_select: "Growth","Inbound","MQA","MQL","A","B","BDM Selected","BU Expension"),
 Meetings (relation → All Meetings, auto-populated — never set directly).
 
 ## All Meetings schema (relevant fields)
@@ -140,7 +139,7 @@ Meeting` has passed without the Status already being a resolved terminal state:
    not automatically.
 
 ### 1b. Conversation Hub email-thread funnel scan
-Scan Conversation Hub rows for this rep that carry an "Email" touch (in `Connected` or `Touch points`)
+Scan Conversation Hub rows for this rep that carry an "Email" touch (in `Connected`)
 and read their current funnel state: `First follow-up sent` / `Second follow-up sent`, `Had meeting?`,
 `Disposition`, and — by checking Gmail for the thread — whether the prospect has actually replied since
 the rep's last touch (this is how "user did not reply" cases surface). Carry this state into Step 7's
@@ -155,8 +154,9 @@ of two lists:
 **Shared baseline — hardcoded here, excluded for every BDR** (the Superside-wide tooling/notification
 senders every rep receives). Apply as `-from:` negations in the Gmail query:
 `tryapollo.io`, `mail.notion.so`, `notifications.hubspot.com`, `chilipiper.com`, `jiminny.com`,
-`zoom.us`, `reachdesk.com`, `email.businessinsider.com`, and the bounce sender
-`mailer-daemon@googlemail.com`.
+`zoom.us`, `reachdesk.com`, and the bounce sender `mailer-daemon@googlemail.com`. (Personal newsletters
+like `news.bloomberg.com` / `email.businessinsider.com` are NOT on the baseline — they go on the per-BDR
+learned list below, since they vary by rep.)
 > ⚠️ **Never exclude `gmail.com`/`googlemail.com` as a domain** — real prospects email from Gmail (a live
 > reply from `jasmin.kaur.uk@gmail.com` was seen in testing). Only the specific `mailer-daemon@…` bounce
 > address is excluded. Excluding `chilipiper.com`/`jiminny.com`/`zoom.us` here is safe: Step 1 gets
@@ -295,7 +295,7 @@ routes Step 6's branch.
 **Branch B — no meeting booked (new reply/inbound, or Closed-Lost re-engagement):** upsert the
 Conversation Hub page (match by Name + Account, never duplicate):
 1. Set/confirm `Name`, `Rep` (the resolved rep — never blank), `Title`, `Account` (from Step 4).
-2. Append **"Email"** to `Connected` and to `Touch points` (no duplicates). Check `Chatting?` only on
+2. Append **"Email"** to `Connected` (no duplicates). Check `Chatting?` only on
    genuine back-and-forth (the person actually replied — true for every REPLY, and for an inbound that's
    become a two-way thread). Check `Inbounded?` for a genuine-inbound-sourced contact.
 3. `Last touched` = the actual date of the person's last message (not necessarily today).

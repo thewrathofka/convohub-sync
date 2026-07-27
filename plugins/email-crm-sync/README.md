@@ -62,8 +62,8 @@ The inbox is mostly automated senders. Two exclusion lists keep the run focused 
 
 ## What each registered person gets
 
-- A Conversation Hub page (created or updated, never duplicated): channel **Email** added to `Connected`
-  and `Touch points`, **Priority** set from the reply's intent (interested/meeting-request → High,
+- A Conversation Hub page (created or updated, never duplicated): channel **Email** added to `Connected`,
+  **Priority** set from the reply's intent (interested/meeting-request → High,
   engaged question/neutral → Medium, soft-no/OOO/auto-reply → Low), a 1-2 sentence recap in `Quick
   notes`, a `Suggested follow-up` date (which fires Notion's own reminder — the alert), and a conversation
   summary in a `## Conversations` section on the page.
