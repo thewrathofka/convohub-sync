@@ -28,9 +28,12 @@ resolved rep's pod (Step 5 there hands off here). Or on explicit request.
    finds it with no asking. Record the team name back into the pod's row in `roster.md` (so the package
    ships knowing it next republish).
 3. **Databases page + four DBs.** Create the "Databases" child page, then build Scoreboard, All Accounts,
-   Conversation Hub, All Meetings exactly per `notion-setup.md` (empty DBs → properties → relations →
-   All Leads view). Skip the formula columns (documented, not API-creatable). Idempotent — never duplicate
-   an existing DB/property/option.
+   Conversation Hub, All Meetings exactly per `notion-setup.md`: empty DBs → properties → relations →
+   **set each default view's column order/visibility via `notion-update-view` SHOW per §10** → All Leads
+   view. Idempotent — never duplicate an existing DB/property/option. Then report the **manual finish-up
+   steps** the API can't do (§7–§10): paste the Scoreboard/All Accounts formulas (§9), set the custom All
+   Meetings `Status` options/groups, and position the formula columns per §10 — hand the rep this short
+   checklist rather than implying the copy is 100% complete.
 4. **Seed reps + AEs.** From `roster.md`, add the pod's BDRs to the team page's `# The Squad` and create a
    Scoreboard row per BDR. Ask for each rep's AE (person) and set it. AE may be left blank → **lazy fill**:
    any later plugin run by a rep whose `AE` is blank asks their AE once and writes it.

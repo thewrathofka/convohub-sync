@@ -289,3 +289,39 @@ lets(
   )
 )
 ```
+
+## 10. Column order + visibility (per-view — required)
+**Column order is a property of the table *view*, not the schema.** A freshly-built database defaults its
+columns to alphabetical order (verified in the write-test — the scratch DB showed columns A→Z, nothing
+like the source). So after building each database's schema + relations, the bootstrap **must set the
+default view's column order** to match the source, via `notion-update-view` with a `SHOW "…"` directive
+listing the columns in order (this both orders *and* hides — any property not listed becomes hidden,
+which is what we want since the sources hide many columns). Verified working: applying the SHOW list below
+to a recreated Conversation Hub view reproduced the source order exactly.
+
+Apply the lists below to each new database's single default view. **Only list properties that already
+exist** when you run it — formula columns (§7/§9) don't exist until manually added, so position them by
+hand at that point per the target order noted here.
+
+**Conversation Hub** (20 shown; all others hidden):
+`SHOW "Name", "Rep", "Title", "Account", "URL Salesforce", "Priority", "Connected", "Last touched", "Quick notes", "Disposition", "Suggested follow-up", "Suggested channel next", "Suggested draft made", "Callback talk track made", "LinkedIn note on page", "First follow-up sent", "Second follow-up sent", "Nutrure?", "Date of last campaign", "Campaign"`
+
+**All Accounts** (11 shown; all others hidden). Note `Number of Connects` + `Total Number of Leads` are
+formulas — omit from the automated SHOW, insert at positions 9–10 when added manually:
+`SHOW "Account Name", "Rep", "Priority Type", "Prospecting Status", "Last Touch Point", "Needs Attention", "Notes", "Temperature", "Campaigns"`
+(target full order incl. formulas: Account Name, Rep, Priority Type, Prospecting Status, Last Touch Point, Needs Attention, Notes, Temperature, **Number of Connects**, **Total Number of Leads**, Campaigns.)
+
+**All Meetings** (14 shown; `LinkedIn of Prospect` + `SF Opp URL` hidden). No formulas, so this is exact:
+`SHOW "Company", "Rep", "Name", "Persona/Title", "Date of Booking", "Date of Meeting", "Channel", "Status", "SAL", "SQL", "Notes", "Pre-meeting email sent", "Pre-meeting email drafted", "Account"`
+(The source also has month-slice views — July 2026, June 2026, …, and analytics views — that are
+Money-Moguls-specific; a new team gets just this one default table. Recreate the extra views only if a
+team asks.)
+
+**Monthly Scoreboard** (13 shown in the source; the operational fields are hidden). All but Name/AE/Level/
+targets are formulas, so the automated SHOW covers only the five real columns; position the formula
+columns per the target order when they're added manually:
+`SHOW "Name", "AE", "Level", "Monthly MC target", "Monthly SQL target"`
+(target full order incl. formulas: Name, AE, Level, Monthly MC target, Monthly SQL target, **Meetings**,
+**Total Meetings Booked**, **Meetings Booked**, **Meetings Completed**, **Priority SQL Count**,
+**Total SQL Count**, **Monthly SQLs Bar**, **Fattest Mogul**. Hidden: All Meetings 1, All Meetings
+(legacy), Email exclusions, Last Convohub Run, Last email check, Last linkedin check.)
