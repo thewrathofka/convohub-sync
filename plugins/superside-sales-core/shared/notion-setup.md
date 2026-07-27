@@ -139,3 +139,21 @@ setup report that a team wanting the analytics dashboard must add these by hand 
 - **Monthly Scoreboard:** `Meetings`, `Meetings Booked`, `Meetings Completed`, `Fattest Mogul`,
   `Monthly SQLs Bar`, `Priority SQL Count`, `Total Meetings Booked`, `Total SQL Count`.
 - **All Accounts:** `Number of Connects`, `Total Number of Leads`.
+
+## 8. Known API limitations (verified in the bootstrap write-test 2026-07-27)
+The DDL build is faithful for everything except these — the bootstrap must flag them in its report as
+**manual finish-up steps** for the rep/admin in the Notion UI:
+1. **All Meetings `Status` options/groups.** `STATUS` in DDL creates only Notion's default options
+   (Not started / In progress / Done). The real custom options — To-do: `Rejected`, `No-show`,
+   `Canceled`; In progress: `Placeholder sent`, `Waiting on time/date`, `Invite not accepted yet`,
+   `Reschedule`, `Booked`; Complete: `Completed` — **cannot** be set via `create_database` /
+   `update_data_source` DDL. After creating the DB, rename/add the status options and assign groups by
+   hand (or via a status-capable API call if one becomes available). Everything downstream that reads
+   `Status` assumes these exact option names, so this step is required, not optional.
+2. **Empty `Sequence` select (Conversation Hub).** A `SELECT()` with no options may be rejected by the
+   DDL parser. If so, create `Sequence` as a bare select in the UI (or add a throwaway option and delete
+   it) — it intentionally has no options in the source schema.
+3. **Formulas** — see §7 (expressions not API-readable).
+Everything else (all other selects/multi-selects incl. their full option lists and colors, checkboxes,
+dates, urls, people, text, and the entire relation graph incl. two-way duals) builds correctly via DDL,
+as confirmed by the write-test.
