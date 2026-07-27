@@ -153,7 +153,139 @@ The DDL build is faithful for everything except these — the bootstrap must fla
 2. **Empty `Sequence` select (Conversation Hub).** A `SELECT()` with no options may be rejected by the
    DDL parser. If so, create `Sequence` as a bare select in the UI (or add a throwaway option and delete
    it) — it intentionally has no options in the source schema.
-3. **Formulas** — see §7 (expressions not API-readable).
+3. **Formulas.** The `FORMULA('…')` DDL works for **scalar** formulas (verified: `1 + 1` created fine),
+   but **any formula that references the `All Meetings 1` relation fails at create time** with
+   `"Type error with formula"` (verified: `prop("All Meetings 1").length()` rejected). Every Scoreboard
+   formula here walks that relation, so none can be built via the API — they must be pasted into the
+   Notion UI's formula editor (which resolves relation types fine). The expressions are stored verbatim in
+   §9 so `team-setup` can hand the admin a paste-ready checklist.
 Everything else (all other selects/multi-selects incl. their full option lists and colors, checkboxes,
 dates, urls, people, text, and the entire relation graph incl. two-way duals) builds correctly via DDL,
 as confirmed by the write-test.
+
+## 9. Scoreboard formula expressions (paste into the Notion UI — API can't build these)
+Create each as a Formula property on Monthly Scoreboard, then paste the expression. They reference the
+`All Meetings 1` relation (present after §5), so they resolve verbatim. **Still needed** (not yet
+captured): `Fattest Mogul` (Scoreboard) and `Number of Connects` + `Total Number of Leads` (All Accounts).
+
+**Meetings**
+```
+lets(
+  thisMonthMeetings, prop("All Meetings 1")
+    .filter(
+      not empty(current.prop("Date of Meeting")) and
+      month(current.prop("Date of Meeting")) == month(now()) and
+      year(current.prop("Date of Meeting")) == year(now())
+    ),
+  companyList, thisMonthMeetings
+    .map(current.prop("Company"))
+    .filter(not empty(current))
+    .unique(),
+  if(thisMonthMeetings.length() == 0,
+    "No meetings this month",
+    format(thisMonthMeetings.length()) +
+    if(thisMonthMeetings.length() == 1, " meeting: ", " meetings: ") +
+    companyList.join(", ")
+  )
+)
+```
+
+**Total Meetings Booked**
+```
+prop("All Meetings 1")
+  .filter(
+    not empty(current.prop("Date of Booking")) and
+    month(current.prop("Date of Booking")) == month(now()) and
+    year(current.prop("Date of Booking")) == year(now())
+  )
+  .length()
+```
+
+**Meetings Booked** (LinkedIn / Cold Call / Email only)
+```
+prop("All Meetings 1")
+  .filter(
+    ["LinkedIn", "Cold Call", "Email"].includes(current.prop("Channel")) and
+    not empty(current.prop("Date of Booking")) and
+    month(current.prop("Date of Booking")) == month(now()) and
+    year(current.prop("Date of Booking")) == year(now())
+  )
+  .length()
+```
+
+**Meetings Completed**
+```
+prop("All Meetings 1")
+  .filter(
+    current.prop("Status") == "Completed" and
+    not empty(current.prop("Date of Meeting")) and
+    month(current.prop("Date of Meeting")) == month(now()) and
+    year(current.prop("Date of Meeting")) == year(now())
+  )
+  .length()
+```
+
+**Priority SQL Count** (SQL, not Inbound none priority)
+```
+prop("All Meetings 1")
+  .filter(
+    current.prop("SQL") and
+    current.prop("Channel") != "Inbound none priority" and
+    not empty(current.prop("Date of Meeting")) and
+    month(current.prop("Date of Meeting")) == month(now()) and
+    year(current.prop("Date of Meeting")) == year(now())
+  )
+  .length()
+```
+
+**Total SQL Count**
+```
+prop("All Meetings 1")
+  .filter(
+    current.prop("SQL") and
+    not empty(current.prop("Date of Meeting")) and
+    month(current.prop("Date of Meeting")) == month(now()) and
+    year(current.prop("Date of Meeting")) == year(now())
+  )
+  .length()
+```
+
+**Monthly SQLs Bar**
+```
+lets(
+  outboundSQLCount, prop("All Meetings 1")
+    .filter(
+      current.prop("SQL") and
+      current.prop("Channel") != "Inbound" and
+      not empty(current.prop("Channel")) and
+      not empty(current.prop("Date of Meeting")) and
+      month(current.prop("Date of Meeting")) == month(now()) and
+      year(current.prop("Date of Meeting")) == year(now())
+    )
+    .length(),
+  percentage, ifs(
+    outboundSQLCount == 0, 0,
+    outboundSQLCount == 1, 14,
+    outboundSQLCount == 2, 29,
+    outboundSQLCount == 3, 43,
+    outboundSQLCount == 4, 57,
+    outboundSQLCount == 5, 71,
+    outboundSQLCount == 6, 86,
+    outboundSQLCount == 7, 100,
+    outboundSQLCount == 8, 114,
+    outboundSQLCount == 9, 125,
+    135
+  ),
+  filledBars, repeat("█", min(outboundSQLCount, 7)),
+  emptyBars, repeat("░", max(0, 7 - outboundSQLCount)),
+  progressBar, filledBars + emptyBars,
+  displayText, progressBar + " " + format(percentage) + "% (" + format(outboundSQLCount) + "/7)",
+  if(outboundSQLCount > 7,
+    style(displayText, "b", "red"),
+    if(percentage >= 100,
+      style(displayText, "b", "green"),
+      displayText
+    )
+  )
+)
+```
