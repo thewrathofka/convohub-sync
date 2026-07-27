@@ -1,0 +1,36 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "superside-sales",
+  "description": "Superside sales toolkit for BDR teams: cold-call (Jiminny), LinkedIn, and email (Gmail) syncs into a team's Notion Conversation Hub / All Accounts / All Meetings, plus rep-facing email + handover skills, a weekly run-all command, and a first-run team bootstrap. Multi-team: each team's databases are resolved live from the Sales page, so one install works for every team.",
+  "owner": { "name": "Superside BDR Team" },
+  "plugins": [
+    {
+      "name": "superside-sales-core",
+      "description": "Team resolution, first-run Notion bootstrap, Salesforce priority-account import, and the /weekly-sync run-all command. Load this alongside the channel syncs.",
+      "author": { "name": "Superside BDR Team" },
+      "category": "sales",
+      "source": "./plugins/superside-sales-core"
+    },
+    {
+      "name": "convohub",
+      "description": "Daily/7/30-day cold-call follow-up review from Jiminny, plus the meeting-emails, followup-email, and ae-handover-notes skills.",
+      "author": { "name": "Superside BDR Team" },
+      "category": "sales",
+      "source": "./plugins/convohub"
+    },
+    {
+      "name": "linkedin-crm-sync",
+      "description": "Reads the rep's LinkedIn inbox and syncs matched conversations into the team's Conversation Hub / All Meetings.",
+      "author": { "name": "Superside BDR Team" },
+      "category": "sales",
+      "source": "./plugins/linkedin-crm-sync"
+    },
+    {
+      "name": "email-crm-sync",
+      "description": "Reads the rep's Gmail for external replies + genuine inbound and syncs eligible ones into the team's Conversation Hub / All Meetings.",
+      "author": { "name": "Superside BDR Team" },
+      "category": "sales",
+      "source": "./plugins/email-crm-sync"
+    }
+  ]
+}

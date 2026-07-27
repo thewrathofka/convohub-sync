@@ -1,0 +1,7 @@
+{
+  "name": "superside-sales-core",
+  "version": "0.1.0",
+  "description": "Shared backbone for the Superside sales plugins: resolves which team's Notion databases a BDR belongs to (via the Sales page), bootstraps a new team's Notion setup on first run (creating the four databases from an exact spec and asking team name + AEs), imports a rep's Salesforce priority accounts, and provides /weekly-sync to run the email, cold-call, and LinkedIn syncs together weekly. Works for whichever rep and team invokes it.",
+  "author": { "name": "Superside BDR Team" },
+  "keywords": ["sales", "bdr", "notion", "salesforce", "jiminny", "gmail", "linkedin", "bootstrap", "multi-team", "weekly"]
+}

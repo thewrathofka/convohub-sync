@@ -1,0 +1,9 @@
+{
+  "name": "convohub",
+  "version": "0.1.0",
+  "description": "Cold-call follow-up review for Superside BDRs: pulls connected cold calls from Jiminny, logs/updates contacts in the Notion Conversation Hub, resolves accounts and parent/child structure in All Accounts, reconciles booked meetings in All Meetings, tracks first/second follow-up cadence and nurture hand-off, and drafts (never sends) Gmail follow-ups. Works for whichever rep invokes it.",
+  "author": {
+    "name": "Superside BDR Team"
+  },
+  "keywords": ["sales", "bdr", "cold calling", "notion", "jiminny", "gmail", "salesforce", "follow-up", "pre-meeting email", "meeting confirmation"]
+}

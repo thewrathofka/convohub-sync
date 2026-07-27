@@ -1,0 +1,9 @@
+{
+  "name": "linkedin-crm-sync",
+  "version": "0.3.0",
+  "description": "Reads your LinkedIn inbox, matches conversation participants against accounts assigned to you in the shared Notion All Accounts CRM, cross-checks Salesforce and your calendar, summarizes those conversations into Conversation Hub, and — only on your explicit go-ahead in chat — sends LinkedIn messages. Works for every rep on the team, each on their own LinkedIn login. Scoped to inbox + existing connections only; no people/company/job search.",
+  "author": {
+    "name": "Katarina Misovic"
+  },
+  "keywords": ["linkedin", "notion", "conversation hub", "crm", "sales", "bdr"]
+}

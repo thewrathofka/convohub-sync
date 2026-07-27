@@ -1,0 +1,141 @@
+# Notion setup spec (exact copy of the team databases)
+
+Declarative blueprint for recreating a team's four databases **exactly** as they exist in Money Moguls
+(captured live 2026-07-27, after Kali's edits). Used by `skills/team-setup` during first-run bootstrap.
+Every property, type, and select option below is verbatim — preserve exact strings, including the typos
+`Nutrure?` and `BU Expension`, the empty `Sequence` select, and any trailing spaces.
+
+Build via the Notion MCP by name: `notion-create-pages` (team page + "Databases" page),
+`notion-create-database` / `notion-update-data-source` (schema DDL), `notion-query-data-sources`
+(idempotency checks). Never hardcode a `mcp__<uuid>__` prefix.
+
+## Build order (relations require targets to exist first)
+1. Create the four databases **empty** (title property only) inside the team's "Databases" page:
+   **Monthly Scoreboard**, **All Accounts**, **Conversation Hub**, **All Meetings**.
+2. Add all non-relation properties to each (tables below).
+3. Add relations last, wiring the graph in §5 (two-way pairs use `DUAL`).
+4. Create the **All Leads** page with a linked view of Conversation Hub (§6).
+5. Formulas (§7) are **not API-creatable** — skip; document for manual re-entry.
+Idempotent: before creating anything, `notion-fetch` the target; if a database/property/option already
+exists, leave it; only add what's missing. Never duplicate an option or a database.
+
+DDL type reference: `TITLE, RICH_TEXT (text), DATE, PEOPLE (person), CHECKBOX, URL, NUMBER,
+SELECT('opt':color,…), MULTI_SELECT('opt':color,…), STATUS, RELATION('ds_id') /
+RELATION('ds_id', DUAL 'PairedProp' 'paired_id')`.
+
+---
+
+## 1. Monthly Scoreboard  (title property: `Name`)
+Plain-settable:
+- `Name` — TITLE
+- `Level` — SELECT(`3a`:green, `2a`:yellow)
+- `Monthly SQL target` — NUMBER
+- `Monthly MC target` — NUMBER
+- `AE` — PEOPLE
+- `Email exclusions` — RICH_TEXT
+- `Last email check` — DATE
+- `Last Convohub Run` — DATE
+- `Last linkedin check` — DATE
+
+Relations (see §5): `All Meetings 1` (DUAL ↔ All Meetings.`Rep`), `All Meetings (legacy)` (one-way → All Meetings).
+Formulas (skip, §7): `Meetings`, `Meetings Booked`, `Meetings Completed`, `Fattest Mogul`, `Monthly SQLs Bar`, `Priority SQL Count`, `Total Meetings Booked`, `Total SQL Count`.
+
+## 2. All Accounts  (title property: `Account Name`)
+Plain-settable:
+- `Account Name` — TITLE
+- `Account URL` — URL   *(desc: "Website / homepage")*
+- `Cluster` — RICH_TEXT
+- `Company Structure` — RICH_TEXT
+- `Notes` — RICH_TEXT
+- `Parent` — RICH_TEXT
+- `sister/child` — RICH_TEXT
+- `Strategy` — RICH_TEXT
+- `Structure Notes` — RICH_TEXT
+- `CL or CW?` — SELECT(`CL`:blue, `CW`:green)
+- `Prospecting Status` — SELECT(`Prospecting`:gray, `SQL`:blue, `SAL`:purple, `Qualified`:green, `Neglected`:red)
+- `Research Confidence` — SELECT(`high`:green, `medium`:yellow, `low`:orange, `failed`:red)
+- `Research Status` — SELECT(`pending`:gray, `done`:green, `needs_review`:yellow, `failed`:red, `out_of_scope`:brown)
+- `Size` — SELECT(`<1000`:gray, `1000-2000`:blue, `2000-5000`:green, `5000+`:purple)
+- `Temperature` — SELECT(`Hot`:red, `Warm`:orange, `Cool`:blue, `Cold`:gray)
+- `Needs Attention` — MULTI_SELECT(`structure-event-new`:red, `structure-type-change`:orange, `funding-round-new`:green, `agency-switch-new`:purple, `rebrand-campaign-new`:pink, `ai-initiative-new`:blue, `tier1-role-open`:yellow, `layoff-new`:brown, `pain-tag-shift`:gray)
+- `Pain Point Tags` — MULTI_SELECT(`creative production`:blue, `localization`:orange, `new territory`:green, `strategy`:purple, `audience education`:yellow, `competitive displacement`:red, `brand evolution`:pink, `launch surge`:brown, `AI receptivity`:gray, `post-layoff overflow`:default)
+- `Priority Type` — MULTI_SELECT(`Growth`:brown, `Inbound`:blue, `MQA`:green, `MQL`:purple, `A`:red, `B`:orange, `BDM Selected`:yellow, `BU Expension`:gray)
+- `Last Hygiene Check` — DATE
+- `Last Prospected` — DATE
+- `Last Researched` — DATE
+- `Last Touch Point` — DATE
+
+Relations (see §5): `Meetings` (DUAL ↔ All Meetings.`Account`), `Rep` (one-way → Scoreboard), `Campaigns` (one-way → Conversation Hub).
+System (auto, not created): `Created` (created_time), `Last Edited` (last_edited_time).
+Formulas (skip, §7): `Number of Connects`, `Total Number of Leads`.
+
+## 3. Conversation Hub  (title property: `Name`)
+Plain-settable:
+- `Name` — TITLE
+- `Title` — RICH_TEXT
+- `Quick notes` — RICH_TEXT
+- `CL or CW?` — SELECT(`close lose`:yellow, `close won`:blue)
+- `Priority` — SELECT(`High`:red, `Medium`:yellow, `Low`:gray)
+- `Suggested channel next` — SELECT(`Email`:green, `LinkedIn`:blue, `Call again`:red)
+- `Sequence` — SELECT()  *(no options — create empty)*
+- `Disposition` — SELECT(`MB Rejected`:default, `MB Canceled`:pink, `CP send email`:blue, `CP not now`:gray, `CP no authority`:red, `Meeting booked`:green, `MB no show`:orange, `Chatting`:purple, `CP no follow-up`:brown, `CP call back`:yellow, `CN call back`:pink, `CN send email`:orange, `CN not now`:purple, `CN no authority`:purple, `CN linkedin`:brown, `CP linkedin`:gray)
+- `Nutrure?` — SELECT(`BDR-led nutrure`:yellow, `Superside connect/dinner Atlanta`:default, `Superside connect/dinner Toronto`:gray, `Superside connect/dinner Chicago`:purple, `Superside connect/dinner NYC`:green, `Superside connect/dinner London`:pink, `Superside connect/dinner SF`:brown, `webinar`:orange)
+- `Connected` — MULTI_SELECT(`Cold call`:blue, `LinkedIn`:purple, `Email`:green)
+- `Campaign` — MULTI_SELECT (59 options, verbatim, in order): `2023Q2 - Lifecycle - Intent Signal: Pricing Page`, `2025Q1 - Content - Overcommitted Report 2025 [Guide]`, `2025Q3 - Content - Inside Great Creative Partnerships [Guide]`, `2025Q3 - Content - The No-Hype AI Report [Guide]`, `2025Q3 - Lifecycle - Intent Signal: Case Studies`, `2025Q3 - Lifecycle - Intent Signal: Our Work`, `2025Q3 - Summit - Crunch Mode Summit [Aug 13]`, `2025Q4 - Content - Shift Happens [Guide]`, `2025Q4 - Customer Marketing - AI Consulting Workshop`, `2025Q4 - Gifting - Customer Gratitude`, `2025Q4 - Lifecycle - AI Video Cross Sell [Customer Marketing]`, `2025Q4 - Lifecycle - Intent Signal: Ad Design Services`, `2025Q4 - Summit - AI Shift`, `2025Q4 - Webinar - Vishal Kapoor - Oct 15`, `2026Q1 - Connect - Seattle [March 25th]`, `2026Q1 - Content - Breakpoint`, `2026Q1 - Content - Misaligned Guide`, `2026Q1 - Field Events - CES Sport Beach (Stagwell)`, `2026Q1 - Gifting - Post-event - Reachdesk`, `2026Q1 - Gifting - Pre event - Reachdesk`, `2026Q1 - Gifting - Seller's Choice - Reachdesk`, `2026Q1 - Summit - Shift March 26th`, `2026Q1 - VIP Dinner - Amazon Seattle [March 11]`, `2026Q1 - VIP Dinner - Boston [March 4th]`, `2026Q1 - VIP Dinner - New York City [Feb 4]`, `2026Q1 - VIP Dinner - New York City [March 5th]`, `2026Q1 - Webinar - Where do I even start? w/ Julia Jaskólska`, `2026Q2 - Conference - Cannes ADWEEK Creative 100 Reception [June 24]`, `2026Q2 - Conference - Cannes Luma House Panel [June 23]`, `2026Q2 - Conference - Cannes Pre-event Meetings [June 22-24]`, `2026Q2 - Conference - Gartner Marketing Symposium Session [Denver June 9]`, `2026Q2 - Conference - Gartner Marketing Symposium [Denver June 9-10]`, `2026Q2 - Connect - San Francisco [May 5th]`, `2026Q2 - Content - AI Reset`, `2026Q2 - Content - AI Reset Checklist`, `2026Q2 - Content - AI Survival Tips for Marketers`, `2026Q2 - Content - Frictionless Future [Creatives]`, `2026Q2 - Content - Leading in the AI Era`, `2026Q2 - Operational - Cannes invitation lists`, `2026Q2 - Summit - Shift June 17th`, `2026Q2 - VIP Dinner - London [April 23]`, `2026Q2 - VIP Dinner - San Francisco [April 7th]`, `2026Q3 - VIP Dinner - London B [July 9th]`, `2026Q3 - VIP Dinner - London [July 9th]`, `2026Q3 - VIP Dinner - Toronto [August 13th]`, `2026Q3 - Webinar - Can Taste be Automated [July 22]`, `AI Readiness Quiz - ToFu Content`, `AI SDR`, `Always On Tech ICP Nurture`, `Amazon Always On Nurture`, `Book a Call - 1-10 Employees`, `Book a Call - Website [New]`, `Customer Marketing- Superside It`, `Guide - AI Guide 2024 - ToFu Content`, `Linkedin Content Downloads - Ad Guide`, `Product Demo`, `SMB Marketing Nurture`, `The Creative Brief Subscription [Blog]`, `Video Solutions Launch - Video Capabilities LP`.
+- `Date of last campaign` — DATE
+- `Last touched` — DATE
+- `Suggested follow-up` — DATE  *(set the property's default reminder to 09:00, day-of, tz Europe/Belgrade — the follow-up alert mechanism)*
+- `URL Jiminny` — URL
+- `URL LinkedIn` — URL
+- `URL Salesforce` — URL
+- Checkboxes: `Callback talk track made`, `Chatting?`, `Cold call connected?`, `Connected on LinkedIn?`, `First follow-up sent`, `Had meeting?`, `Inbounded?`, `LinkedIn note on page`, `Second follow-up sent`, `Suggested draft made`
+
+Relations (see §5): `Account` (one-way → All Accounts), `Rep` (one-way → Scoreboard).
+
+## 4. All Meetings  (title property: `Company`)
+Plain-settable:
+- `Company` — TITLE
+- `Channel` — SELECT(`Email`:red, `LinkedIn`:blue, `Cold Call`:default, `Inbound priority`:orange, `Inbound none priority`:purple)
+- `Persona/Title` — SELECT(`Creative Director`:brown, `Marketing Director`:green, `CMO`:red, `Business Bob`:gray, `Brand Lead`:purple, `Head of Brand`:orange, `Communications Director`:yellow, `VP of Brand Marketing`:blue, `Head of Creative Operations`:default, `Brand Strategy`:pink, `Head of Marketing`:yellow, `Marketing Operations`:orange)
+- `Status` — STATUS, options by group:
+  - To-do: `Rejected`:red, `No-show`:red, `Canceled`:red
+  - In progress: `Placeholder sent`:orange, `Waiting on time/date`:orange, `Invite not accepted yet`:orange, `Reschedule`:orange, `Booked`:default
+  - Complete: `Completed`:green
+- `Date of Booking` — DATE
+- `Date of Meeting` — DATE (display format `ll`)
+- `LinkedIn of Prospect` — URL
+- `SF Opp URL` — URL
+- `Notes` — RICH_TEXT
+- Checkboxes: `Pre-meeting email drafted`, `Pre-meeting email sent`, `SAL`, `SQL`
+
+Relations (see §5): `Account` (DUAL ↔ All Accounts.`Meetings`), `Rep` (DUAL ↔ Scoreboard.`All Meetings 1`), `Name` (one-way → Conversation Hub).
+
+---
+
+## 5. Relation graph (wire after all four DBs exist)
+Two-way (create with `DUAL`, one side each):
+- **All Accounts.`Meetings` ↔ All Meetings.`Account`**
+- **Monthly Scoreboard.`All Meetings 1` ↔ All Meetings.`Rep`**
+
+One-way (single side, `RELATION('target_ds')`):
+- All Meetings.`Name` → Conversation Hub
+- Conversation Hub.`Account` → All Accounts
+- Conversation Hub.`Rep` → Monthly Scoreboard
+- All Accounts.`Campaigns` → Conversation Hub
+- All Accounts.`Rep` → Monthly Scoreboard
+- Monthly Scoreboard.`All Meetings (legacy)` → All Meetings
+
+## 6. All Leads (linked view, NOT a database)
+Create a page titled **"All Leads"** under "Databases" with an inline **linked view of Conversation Hub**
+(same collection — do not create a new database). View type: table. Show, in order: `Name`, `Rep`,
+`Title`, `Account`, `URL Salesforce`, `Campaign`, `Date of last campaign`, `Priority`, `Connected`,
+`Last touched`, `Quick notes`, `Sequence`, `Connected on LinkedIn?`, `Chatting?`, `Inbounded?`,
+`CL or CW?`. Filters: `Rep` (relation contains), `Account` (relation contains), `Campaign` (multi-select
+contains). Sort: `Date of last campaign` descending.
+
+## 7. Formulas (omitted — document for manual re-entry)
+Not creatable via the API (expressions aren't API-readable). Leave out of the automated build; note in the
+setup report that a team wanting the analytics dashboard must add these by hand in the Notion UI.
+- **Monthly Scoreboard:** `Meetings`, `Meetings Booked`, `Meetings Completed`, `Fattest Mogul`,
+  `Monthly SQLs Bar`, `Priority SQL Count`, `Total Meetings Booked`, `Total SQL Count`.
+- **All Accounts:** `Number of Connects`, `Total Number of Leads`.

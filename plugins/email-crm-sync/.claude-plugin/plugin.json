@@ -1,0 +1,7 @@
+{
+  "name": "email-crm-sync",
+  "version": "0.1.0",
+  "description": "Reads the rep's Gmail, finds external people who replied to outreach (even when it was sent from another domain via Apollo) or sent a genuine inbound, and — only for people worth acting on — logs them into the shared Notion Conversation Hub / All Accounts / All Meetings with channel Email, a reply-intent priority, a conversation summary, a suggested follow-up date, and a drafted (never sent) Gmail reply. Starts every run by reconciling existing email threads and meetings in the funnel. Windowed variants: /email-sync (since last run), /email-sync7, /email-sync30. Works for whichever rep invokes it.",
+  "author": { "name": "Superside BDR Team" },
+  "keywords": ["email", "gmail", "notion", "conversation hub", "crm", "sales", "bdr", "follow-up", "re-engagement", "salesforce"]
+}
