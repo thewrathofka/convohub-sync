@@ -25,9 +25,9 @@ draft for the rep to review and send themselves.
 ## Resolve the team's databases first (multi-team)
 
 Before Step 0, get the four Notion data-source IDs for the **running rep's team** by following
-`superside-sales-core`'s `shared/team-resolution.md` (rep → team via the bundled roster + the `💸 Sales`
+`convohub-sync-core`'s `shared/team-resolution.md` (rep → team via the bundled roster + the `💸 Sales`
 page → the team's "Databases" page → the four DBs by name), and use those IDs everywhere below in place of
-the fixed IDs. If `superside-sales-core` isn't installed or resolution can't complete, fall back to the
+the fixed IDs. If `convohub-sync-core` isn't installed or resolution can't complete, fall back to the
 Money Moguls defaults below so the plugin still works for that team. Never write into a team you didn't
 resolve; if resolution is ambiguous, stop and ask.
 
@@ -244,7 +244,7 @@ truth when unsure; detect parent/subsidiary via naming/domain/quick web search a
 `Parent`/`sister/child`). Unlike `/linkedin-sync` (which never creates accounts), genuine inbound can
 come from a company not yet tracked, so **creating** a new All Accounts row here is allowed, exactly as
 `/convohub` does. Never leave a registered person without an Account relation. When you create a new All
-Accounts row, follow the **Organic backfill** in `superside-sales-core`'s `shared/salesforce-import.md`:
+Accounts row, follow the **Organic backfill** in `convohub-sync-core`'s `shared/salesforce-import.md`:
 set `Priority Type` from the account's Salesforce `Priority_Account__c` (mapped A→A, B→B, C→BDM Selected,
 BU tiers→BU Expension only for eligible reps) plus descriptive-only fields (Account URL, Size, Last
 Prospected, Parent) — never buying-signal/lead fields. If no confident SF match, leave `Priority Type`

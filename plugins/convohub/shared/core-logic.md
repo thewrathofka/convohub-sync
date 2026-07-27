@@ -5,9 +5,9 @@ This file is the shared logic for all three convohub commands (`convohub`, `conv
 ## Resolve the team's databases first (multi-team)
 
 Before Step 0, get the four Notion data-source IDs for the **running rep's team** by following
-`superside-sales-core`'s `shared/team-resolution.md` (rep → team via the bundled roster + the `💸 Sales`
+`convohub-sync-core`'s `shared/team-resolution.md` (rep → team via the bundled roster + the `💸 Sales`
 page → the team's "Databases" page → the four DBs by name), and use those IDs everywhere below in place of
-the fixed IDs. If `superside-sales-core` isn't installed or resolution can't complete, fall back to the
+the fixed IDs. If `convohub-sync-core` isn't installed or resolution can't complete, fall back to the
 Money Moguls defaults below. Never write into a team you didn't resolve; if ambiguous, stop and ask.
 
 **AE resolution:** prefer the resolved team's Monthly Scoreboard `AE` person field (populated at
@@ -160,7 +160,7 @@ This routine is shared by every step above and below that needs to set or verify
    - If it is a subsidiary: create a new All Accounts page (Account Name = new company, Rep = resolved rep) with Parent = the existing parent's Account Name. Also update the parent's own page: append the new child's name to its `sister/child` field (comma-joined with whatever is already there), and set the parent's own `Parent` field to its own name if not already set (never overwrite an existing value there).
    - If not a subsidiary: create a new All Accounts page with just Account Name + Rep.
 3. Use the resulting page as the `Account` relation value — on the Conversation Hub row, the All Meetings row, or both, whichever triggered this resolution.
-4. **Organic backfill on newly-created accounts.** Whenever this routine *creates* a new All Accounts row, follow the **Organic backfill** in `superside-sales-core`'s `shared/salesforce-import.md`: set `Priority Type` from the account's Salesforce `Priority_Account__c` (A→A, B→B, C→BDM Selected, BU tiers→BU Expension only for eligible reps) plus descriptive-only fields (Account URL, Size, Last Prospected, Parent) — never buying-signal/lead fields. No confident SF match → leave `Priority Type` unset and flag; never guess a tier.
+4. **Organic backfill on newly-created accounts.** Whenever this routine *creates* a new All Accounts row, follow the **Organic backfill** in `convohub-sync-core`'s `shared/salesforce-import.md`: set `Priority Type` from the account's Salesforce `Priority_Account__c` (A→A, B→B, C→BDM Selected, BU tiers→BU Expension only for eligible reps) plus descriptive-only fields (Account URL, Size, Last Prospected, Parent) — never buying-signal/lead fields. No confident SF match → leave `Priority Type` unset and flag; never guess a tier.
 
 ## Step 7 — Conversation Hub follow-up cadence (every run, all three commands — scans existing rows for this rep, not just ones touched by Steps 1-5)
 

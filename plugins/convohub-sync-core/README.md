@@ -1,4 +1,4 @@
-# superside-sales-core
+# convohub-sync-core
 
 The shared backbone for the Superside sales plugins. It makes the three channel syncs
 (`email-crm-sync`, `convohub`, `linkedin-crm-sync`) **multi-team** and adds a weekly run-all command.

@@ -14,9 +14,9 @@ Denied at the permission layer (cannot be called regardless of what this doc say
 ## Resolve the team's databases first (multi-team)
 
 Before Step 0, get the four Notion data-source IDs for the **running rep's team** by following
-`superside-sales-core`'s `shared/team-resolution.md` (rep → team via the bundled roster + the `💸 Sales`
+`convohub-sync-core`'s `shared/team-resolution.md` (rep → team via the bundled roster + the `💸 Sales`
 page → the team's "Databases" page → the four DBs by name), and use those IDs everywhere below in place of
-the fixed IDs. If `superside-sales-core` isn't installed or resolution can't complete, fall back to the
+the fixed IDs. If `convohub-sync-core` isn't installed or resolution can't complete, fall back to the
 Money Moguls defaults below. Never write into a team you didn't resolve; if ambiguous, stop and ask.
 
 Note: unlike `/convohub` and `/email-sync`, this plugin intentionally does **not** create new All Accounts
