@@ -64,6 +64,11 @@ Plain-settable:
 - `Last Prospected` — DATE
 - `Last Researched` — DATE
 - `Last Touch Point` — DATE
+- `ROI Score` — NUMBER   *(account-intel: fit/value score 0–100)*
+- `Prospecting Readiness` — NUMBER   *(account-intel: timing/urgency score 0–100)*
+- `Prospect Now` — SELECT(`NOW!`:green, `why not`:yellow, `whatever`:gray)   *(account-intel verdict)*
+- `Leads (2y)` — NUMBER   *(account-intel: distinct people engaged in last 2y + open MQLs)*
+- `Last Intel Run` — DATE   *(account-intel freshness stamp)*
 
 Relations (see §5): `Meetings` (DUAL ↔ All Meetings.`Account`), `Rep` (one-way → Scoreboard), `Campaigns` (one-way → Conversation Hub).
 System (auto, not created): `Created` (created_time), `Last Edited` (last_edited_time).
@@ -306,10 +311,11 @@ hand at that point per the target order noted here.
 **Conversation Hub** (20 shown; all others hidden):
 `SHOW "Name", "Rep", "Title", "Account", "URL Salesforce", "Priority", "Connected", "Last touched", "Quick notes", "Disposition", "Suggested follow-up", "Suggested channel next", "Suggested draft made", "Callback talk track made", "LinkedIn note on page", "First follow-up sent", "Second follow-up sent", "Nutrure?", "Date of last campaign", "Campaign"`
 
-**All Accounts** (11 shown; all others hidden). Note `Number of Connects` + `Total Number of Leads` are
-formulas — omit from the automated SHOW, insert at positions 9–10 when added manually:
-`SHOW "Account Name", "Rep", "Priority Type", "Prospecting Status", "Last Touch Point", "Needs Attention", "Notes", "Temperature", "Campaigns"`
-(target full order incl. formulas: Account Name, Rep, Priority Type, Prospecting Status, Last Touch Point, Needs Attention, Notes, Temperature, **Number of Connects**, **Total Number of Leads**, Campaigns.)
+**All Accounts** (all others hidden). The account-intel score columns sit right after `Priority Type`.
+Note `Number of Connects` + `Total Number of Leads` are formulas — omit from the automated SHOW, insert
+near the end when added manually:
+`SHOW "Account Name", "Rep", "Priority Type", "ROI Score", "Prospecting Readiness", "Prospect Now", "Leads (2y)", "Prospecting Status", "Last Touch Point", "Last Intel Run", "Needs Attention", "Notes", "Temperature", "Campaigns"`
+(target full order incl. formulas: Account Name, Rep, Priority Type, ROI Score, Prospecting Readiness, Prospect Now, Leads (2y), Prospecting Status, Last Touch Point, Last Intel Run, Needs Attention, Notes, Temperature, **Number of Connects**, **Total Number of Leads**, Campaigns.)
 
 **All Meetings** (14 shown; `LinkedIn of Prospect` + `SF Opp URL` hidden). No formulas, so this is exact:
 `SHOW "Company", "Rep", "Name", "Persona/Title", "Date of Booking", "Date of Meeting", "Channel", "Status", "SAL", "SQL", "Notes", "Pre-meeting email sent", "Pre-meeting email drafted", "Account"`

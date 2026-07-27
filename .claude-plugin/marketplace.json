@@ -31,6 +31,13 @@
       "author": { "name": "Superside BDR Team" },
       "category": "sales",
       "source": "./plugins/email-crm-sync"
+    },
+    {
+      "name": "account-intel",
+      "description": "Account Intelligence — /account-intel <company> pulls a full internal + external picture of an account (past comms, dropped conversations, leads/MQLs, closed-lost, company/creative research), scores it (ROI + Prospecting Readiness), fills All Accounts hygiene properties, and can revive dropped conversations into Conversation Hub. Usable by anyone, even outside sales (read-only for non-BDRs).",
+      "author": { "name": "Superside BDR Team" },
+      "category": "sales",
+      "source": "./plugins/account-intel"
     }
   ]
 }

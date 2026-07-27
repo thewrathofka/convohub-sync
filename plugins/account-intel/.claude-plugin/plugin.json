@@ -1,0 +1,7 @@
+{
+  "name": "account-intel",
+  "version": "0.1.0",
+  "description": "Account Intelligence — the reverse of the channel syncs. Run /account-intel <company> to pull a full picture of an account: internal history (past comms, dropped conversations to revive, leads/MQLs, closed-lost with Jiminny stall analysis) and external hygiene/research (company profile, corporate structure, creative signals), plus an ROI Score and a Prospecting Readiness verdict (NOW! / why not / whatever). Fills the All Accounts hygiene properties, writes an intelligence block on the account page for BDRs (chat-only for non-sales), and — only on the BDR's explicit yes — revives dropped conversations into Conversation Hub with drafted (never sent) follow-ups. Resolves whichever team + person invokes it.",
+  "author": { "name": "Superside BDR Team" },
+  "keywords": ["account intelligence", "research", "salesforce", "notion", "scoring", "prospecting", "crm hygiene", "sales", "revival", "roi score"]
+}
