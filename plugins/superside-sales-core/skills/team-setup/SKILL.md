@@ -29,8 +29,9 @@ resolved rep's pod (Step 5 there hands off here). Or on explicit request.
    ships knowing it next republish).
 3. **Databases page + four DBs.** Create the "Databases" child page, then build Scoreboard, All Accounts,
    Conversation Hub, All Meetings exactly per `notion-setup.md`: empty DBs → properties → relations →
-   **set each default view's column order/visibility via `notion-update-view` SHOW per §10** → All Leads
-   view. Idempotent — never duplicate an existing DB/property/option. Then report the **manual finish-up
+   **set each default view's column order/visibility via `notion-update-view` SHOW per §10** → create the
+   two All Meetings monthly views (current month + one back) per §11 → All Leads view. Idempotent — never
+   duplicate an existing DB/property/option. Then report the **manual finish-up
    steps** the API can't do (§7–§10): paste the Scoreboard/All Accounts formulas (§9), set the custom All
    Meetings `Status` options/groups, and position the formula columns per §10 — hand the rep this short
    checklist rather than implying the copy is 100% complete.

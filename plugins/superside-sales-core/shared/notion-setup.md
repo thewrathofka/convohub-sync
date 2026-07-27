@@ -325,3 +325,22 @@ columns per the target order when they're added manually:
 **Total Meetings Booked**, **Meetings Booked**, **Meetings Completed**, **Priority SQL Count**,
 **Total SQL Count**, **Monthly SQLs Bar**, **Fattest Mogul**. Hidden: All Meetings 1, All Meetings
 (legacy), Email exclusions, Last Convohub Run, Last email check, Last linkedin check.)
+
+## 11. All Meetings monthly views (create two at setup, dynamic to the setup date)
+The source All Meetings carries one table view per month (`July 2026`, `June 2026`, …). Don't recreate
+the whole history — at bootstrap, create **two** month views sized to *now*: the **current month** and
+**the previous month** (one back; roll the year over correctly — if setup runs in January, the prior view
+is December of the previous year). Each is a `table` view named `"<Month YYYY>"` (e.g. `July 2026`),
+filtered to that calendar month on **`Date of Booking`**, sorted by `Date of Meeting` descending, with the
+same 14-column layout used by the source's current view — `LinkedIn of Prospect` and `SF Opp URL` stay
+**hidden**. The team adds a new month view each month thereafter (out of scope for the bootstrap).
+
+Create each via `notion-create-view` (database_id + data_source_id of the team's All Meetings). Verified
+working DSL (the `FILTER … >= … AND … <= …` form compiles to the same `date_is_on_or_after` +
+`date_is_on_or_before` range the source uses):
+```
+FILTER "Date of Booking" >= "<YYYY-MM-01>" AND "Date of Booking" <= "<YYYY-MM-lastday>";
+SORT BY "Date of Meeting" DESC;
+SHOW "Company", "Rep", "Name", "Persona/Title", "Date of Booking", "Date of Meeting", "Channel", "Status", "SAL", "SQL", "Notes", "Pre-meeting email sent", "Pre-meeting email drafted", "Account"
+```
+(Compute `<YYYY-MM-lastday>` as the actual last day of that month — 28/29/30/31.)
