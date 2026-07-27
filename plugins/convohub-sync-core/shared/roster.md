@@ -9,7 +9,7 @@ match.
 
 | Pod (manager) | Segment | Team name | BDRs |
 |---|---|---|---|
-| Raphael Smith | Enterprise | **Money Moguls** | Brogan Rogers · Emir Korajcevic · Ghia du Plessis · Katarina Misovic · Strahinja Ivanovic · Wayne van der Merwe |
+| Raphael Smith | Enterprise | **Money Moguls** | _(already set up — excluded from bootstrap; MM BDRs resolve via the existing Money Moguls page)_ |
 | Chris Masbernat | Mid-Market | **Sales Sharks** | Eréndira Del Carmen Pita Jimenez · Nencho Peltekov · Robert Stefan Ivan · Yehia Saleh |
 | Juan Sebastian Aranguren Sanchez | Enterprise | **Money Lynx** | Alvaro Andres Villavicencio Espinoza · Felipe Jesus Chamorro Mantica · Matias Ulrich · Nicolas Ortiz Mendez · Samuel Güther Duarte · Stefan Džakula |
 | Sam Schaut | Enterprise | **Pipeline Pirates** | Alexandra Sanoubane · Bruno de Paula · Gabriela Moncada Madriñán · Hanna Borg · Jose David Belalcázar Bonelo · Ximena Servin Enriquez · Yasmine Arab · Yohann Sébastien Doppia |
